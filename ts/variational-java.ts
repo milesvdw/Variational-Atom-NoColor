@@ -205,7 +205,7 @@ class VJava {
                 nameDiv.remove();
 
                 var dimDiv = $(`<div class='form-group dimension-ui-div' id='${dimName}'>
-                    <input style='display: none' class="colorpicker" id="${dimName}-colorpicker" value="ab2567">
+                    <input style='display: none;' class="colorpicker" id="${dimName}-colorpicker" value="ab2567">
                     <h2>${dimName}</h2
                     <br>
                     <div class="switch-toggle switch-3 switch-candy">
@@ -243,7 +243,14 @@ class VJava {
                         command: 'variational-java:add-choice-segment-' + dimName + '-unselected'
                     }]
                 })
+                var whenSelectedSub = {};
+                whenSelectedSub[`variational-java:add-choice-segment-${dimName}-selected`] = () => this.addChoiceSegment(dimName, "DEF");
+                var whenUnselectedSub = {};
+                whenUnselectedSub[`variational-java:add-choice-segment-${dimName}-unselected`] = () => this.addChoiceSegment(dimName, "NDEF");
                 this.ui.contextMenu = atom.contextMenu.add({'atom-text-editor': [{label: 'Insert Choice', submenu: this.ui.menuItems}]});
+
+                this.subscriptions.add(atom.commands.add('atom-text-editor', whenSelectedSub));
+                this.subscriptions.add(atom.commands.add('atom-text-editor', whenUnselectedSub));
 
                 this.ui.dimensions.push(dimension);
 
@@ -310,7 +317,7 @@ class VJava {
     }
 
     updateColors(doc: RegionNode) {
-        return; //RETURN EARLY TO PREVENT COLORIZATION
+        return; // RETURN EARLY to prevent colorization
         // this.clearColors();
         // for (var i = 0; i < doc.segments.length; i++) {
         //     this.setColors(doc.segments[i]);
@@ -429,7 +436,7 @@ class VJava {
               if(!previousSelection) this.ui.activeChoices.push({name: node.name, status: 'BOTH'});
 
                 var dimDiv = $(`<div class='form-group dimension-ui-div' id='${node.name}'>
-              <input style='display: none' class='colorpicker' type='text' id="${node.name}-colorpicker">
+              <input style='display: none;' class='colorpicker' type='text' id="${node.name}-colorpicker">
               <h2>${node.name}</h2>
               <br>
               <div class="switch-toggle switch-3 switch-candy">
@@ -498,12 +505,6 @@ class VJava {
                     this.updateEditorText();
                 });
 
-                var thenSyntaxMarker = editor.markBufferPosition(node.thenbranch.span.start);
-                this.ui.markers.push(thenSyntaxMarker);
-                var syntaxView = document.createElement('div');
-                syntaxView.textContent = (node.kind === 'positive' ? '#ifdef ' : '#ifndef ') + node.name;
-                editor.decorateMarker(thenSyntaxMarker, { type: 'block', position: 'before', item: syntaxView });
-
                 var element = document.createElement('div');
 
                 for (var i = this.nesting.length - 1; i >= 0; i--) {
@@ -563,18 +564,6 @@ class VJava {
                 });
                 this.ui.regionMarkers.push(elsebranchMarker);
 
-                var elseSyntaxMarker = editor.markBufferPosition(node.elsebranch.span.start);
-                this.ui.markers.push(elseSyntaxMarker);
-                var syntaxView = document.createElement('div');
-                syntaxView.textContent = '#else';
-                editor.decorateMarker(elseSyntaxMarker, { type: 'block', position: 'before', item: syntaxView });
-
-                var endSyntaxMarker = editor.markBufferPosition(node.elsebranch.span.end);
-                this.ui.markers.push(endSyntaxMarker);
-                var syntaxView = document.createElement('div');
-                syntaxView.textContent = '#endif';
-                editor.decorateMarker(endSyntaxMarker, { type: 'block', position: 'after', item: syntaxView });
-
                 var element = document.createElement('div');
                 editor.decorateMarker(elsebranchMarker, { type: 'line', class: node.kind === 'positive' ? getndefbranchCssClass(node.name) : getdefbranchCssClass(node.name)  });
 
@@ -626,12 +615,6 @@ class VJava {
                     this.renderDimensionUI(editor, node.elsebranch.segments[i]);
                 }
                 this.nesting.pop();
-            } else {
-                var endSyntaxMarker = editor.markBufferPosition(node.thenbranch.span.end);
-                this.ui.markers.push(endSyntaxMarker);
-                var syntaxView = document.createElement('div');
-                syntaxView.textContent = '#endif';
-                editor.decorateMarker(endSyntaxMarker, { type: 'block', position: 'after', item: syntaxView });
             }
 
 
