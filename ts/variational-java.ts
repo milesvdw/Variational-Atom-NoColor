@@ -205,7 +205,7 @@ class VJava {
                 nameDiv.remove();
 
                 var dimDiv = $(`<div class='form-group dimension-ui-div' id='${dimName}'>
-                    <input class="colorpicker" id="${dimName}-colorpicker" value="ab2567">
+                    <input style='display: none' class="colorpicker" id="${dimName}-colorpicker" value="ab2567">
                     <h2>${dimName}</h2
                     <br>
                     <div class="switch-toggle switch-3 switch-candy">
@@ -438,7 +438,7 @@ class VJava {
               if(!previousSelection) this.ui.activeChoices.push({name: node.name, status: 'BOTH'});
 
                 var dimDiv = $(`<div class='form-group dimension-ui-div' id='${node.name}'>
-              <input class='colorpicker' type='text' id="${node.name}-colorpicker">
+              <input style='display: none' class='colorpicker' type='text' id="${node.name}-colorpicker">
               <h2>${node.name}</h2>
               <br>
               <div class="switch-toggle switch-3 switch-candy">
