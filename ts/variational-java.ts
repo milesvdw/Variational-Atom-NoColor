@@ -505,6 +505,13 @@ class VJava {
                     this.updateEditorText();
                 });
 
+                var thenSyntaxMarker = editor.markBufferPosition(node.thenbranch.span.start);
+                this.ui.markers.push(thenSyntaxMarker);
+                var syntaxView = document.createElement('div');
+                syntaxView.classList.add("testclass");
+                syntaxView.textContent = (node.kind === 'positive' ? '#ifdef ' : '#ifndef ') + node.name;
+                editor.decorateMarker(thenSyntaxMarker, { type: 'block', position: 'before', item: syntaxView });
+
                 var element = document.createElement('div');
 
                 for (var i = this.nesting.length - 1; i >= 0; i--) {
@@ -564,6 +571,19 @@ class VJava {
                 });
                 this.ui.regionMarkers.push(elsebranchMarker);
 
+                var elseSyntaxMarker = editor.markBufferPosition(node.elsebranch.span.start);
+                this.ui.markers.push(elseSyntaxMarker);
+                var syntaxView = document.createElement('div');
+                syntaxView.textContent = '#else';
+                editor.decorateMarker(elseSyntaxMarker, { type: 'block', position: 'before', item: syntaxView });
+
+                var endSyntaxMarker = editor.markBufferPosition(node.elsebranch.span.end);
+                this.ui.markers.push(endSyntaxMarker);
+                var syntaxView = document.createElement('div');
+                syntaxView.textContent = '#endif';
+                editor.decorateMarker(endSyntaxMarker, { type: 'block', position: 'after', item: syntaxView });
+
+
                 var element = document.createElement('div');
                 editor.decorateMarker(elsebranchMarker, { type: 'line', class: node.kind === 'positive' ? getndefbranchCssClass(node.name) : getdefbranchCssClass(node.name)  });
 
@@ -616,6 +636,14 @@ class VJava {
                 }
                 this.nesting.pop();
             }
+            else {
+                var endSyntaxMarker = editor.markBufferPosition(node.thenbranch.span.end);
+                this.ui.markers.push(endSyntaxMarker);
+                var syntaxView = document.createElement('div');
+                syntaxView.textContent = '#endif';
+                editor.decorateMarker(endSyntaxMarker, { type: 'block', position: 'after', item: syntaxView });
+            }
+
 
 
         } else {
