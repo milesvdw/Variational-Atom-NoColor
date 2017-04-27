@@ -245,15 +245,6 @@ class VJava {
                 })
                 this.ui.contextMenu = atom.contextMenu.add({'atom-text-editor': [{label: 'Insert Choice', submenu: this.ui.menuItems}]});
 
-
-                dimension.colorpicker = $(document.getElementById(dimension.name + '-colorpicker')).spectrum({
-                    color: dimension.color,
-                    preferredFormat: 'rgb'
-                }).on('change', () => {
-                    dimension.color = dimension.colorpicker.spectrum('get').toHexString();
-                    this.updateDimensionColor(dimension);
-                });
-
                 this.ui.dimensions.push(dimension);
 
                 // default new dimensions to show both branches
@@ -490,13 +481,6 @@ class VJava {
                 var uiColor: string = this.ui.getColorForNode(node);
 
                 var dimUIElement = this.ui.setupColorPickerForDim(node.name, editor);
-
-                dimUIElement.colorpicker.on('change', () => {
-                    var rgba = dimUIElement.colorpicker.spectrum('get').toRgbString();
-                    dimUIElement.color = rgba;
-
-                    this.updateDimensionColor(dimUIElement);
-                });
 
                 this.addViewListeners(dimUIElement);
             }

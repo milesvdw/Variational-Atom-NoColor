@@ -125,10 +125,6 @@ export class VJavaUI {
     setupColorPickerForDim(dimName: string, editor: AtomCore.IEditor): DimensionUI {
         var dimUIElement;
         dimUIElement = this.getDimUIElementByName(dimName);
-        dimUIElement.colorpicker = $(`#${dimName}-colorpicker`).spectrum({
-            color: this.getColorForDim(dimName),
-            preferredFormat: 'rgb'
-        });
         return dimUIElement;
 
     }
